@@ -1,0 +1,169 @@
+# Enterprise Architectural Tenets (unless you know better ones...) Enterprise architects promote best practices and create solutions in IT
+organizations. They balance tradeoffs required in order to deliver...
+
+### **Enterprise Architectural Tenets (unless you know better ones...)**
+Enterprise architects promote best practices and create solutions in IT
+organizations. They balance tradeoffs required in order to deliver MVP1
+on time with long term architectural goals. When we make compromises,
+architects should document the change. The constraints we face today
+will not be constraints we face in the future.
+
+
+<figcaption>Photo by <a
+href="https://unsplash.com/@cosmictimetraveler?utm_source=medium&amp;utm_medium=referral"
+class="markup--anchor markup--figure-anchor"
+data-href="https://unsplash.com/@cosmictimetraveler?utm_source=medium&amp;utm_medium=referral"
+rel="photo-creator noopener" target="_blank">Cosmic Timetraveler</a>
+on <a
+href="https://unsplash.com?utm_source=medium&amp;utm_medium=referral"
+class="markup--anchor markup--figure-anchor"
+data-href="https://unsplash.com?utm_source=medium&amp;utm_medium=referral"
+rel="photo-source noopener" target="_blank">Unsplash</a></figcaption>
+
+
+These are my guiding principles when building solutions that scale using
+AWS.
+
+**DevOps deployment with iterative scope:** We will design for the
+complete known scope so that incremental features will not require
+significant rewrites of previously deployed code or massive conversion
+of existing data as the system evolves. The MVP solution may have to be
+refactored for a scaleable, durable, resilient long-term solution. While
+tradeoffs will be required, we will not compromise on security.
+
+**Service-oriented Architecture:** When making technology choices we
+will prefer systems with loosely coupled connections with reusable
+components.
+
+**Managed services, first:** We prefer systems that leverage AWS managed
+services and are designed for dynamic partitioning to scale horizontally
+from the start.
+
+**Design solutions people can actually use:** We will understand the how
+users interact with our solutions and design user experiences that
+minimize cognitive load.
+
+**Data driven Continuous Integration/Continuous Delivery:** We will
+design tools and services for high performance by continuously measuring
+and improving latency, UI responsiveness, and process cycle time. If
+latency is unavoidable we will strive for consistent view of the data
+across the different tools.
+
+**Customer Data Ownership**: All data that is handled by the system must
+remain owned by the customer, and the customer must be able to apply
+their own security controls to the data wherever possible.
+
+**Occam's Razor**: The simplest solution is the best one. When given
+multiple choices about how to solve a problem in the system, the
+simplest will be preferred, where simple means the architectural best
+practices are the ones that people actually follow, the system is
+externally observable through standard logging/monitoring, and the cost
+to change the system by engineers is minimized.
+
+**Separation of Compute & Storage**: The architecture will not employ
+architectures which couple data storage and compute --- specifically we
+will minimize the use of EBS storage wherever possible
+
+**Well Architected**: The solution will be well architected, per ongoing
+Well Architected Reviews. This includes
+
+- **Reliability --- be Resilient & Adaptive**: Everything fails all the
+  time, and the architecture will design for multi-AZ and dynamic
+  failover between components. A system needs a well-planned foundation
+  and monitoring in place, with mechanisms for handling changes in
+  demand, requirements, or potentially defending a denial of service
+  attack. The system should be designed to detect failure and, ideally,
+  automatically heal itself.
+- **Secure by design**: Security will be an integral part of the
+  design, and the security & protection of customer data will not be
+  compromised by the system for any reason
+- **Cost Efficiency**: Handled by other tenets
+- **Operational Excellence**: We will build, deploy, and operate
+  systems with that have minimal operational burden. If there are
+  multiple design choices that meet the comparable requirements of
+  functionality, we will choose the solution that requires the least
+  operational effort.
+- **Performance**: We will take a data-driven approach to selecting a
+  high-performance architecture. We will gather data on all aspects of
+  the architecture, from the high-level design to the selection and
+  configuration of resource types to ensure that we are taking advantage
+  of the continually evolving AWS Cloud. We will use horizontal
+  scalability to meet performance objectives.
+
+#### **Guidelines for IT Projects**
+**Compute and storage are separate.** Applications that consume and
+enrich data from the data lake will write back the enriched versions to
+the data lake so it can be available to additional applications.
+
+**Event-driven** architecture is preferred because it enables
+streamlining asynchronous executions of code and limit consumer wait
+cycles. This architecture is commonly implemented asynchronously using
+queues, streams, pub/sub, Webhooks, state machines, and event rule
+managers across multiple components that perform a business
+functionality. **Use events to trigger transactions:** Events such as
+writing a new Amazon S3 object or an update to a database allow for
+transaction execution in response to business functionalities. This
+asynchronous event behavior is often consumer agnostic and drives
+just-in-time processing to ensure lean service design.
+
+Application should **send logs to enable analysis** of common customer
+locations, the impact of customer input requests on the the data layer,
+potential security issues, and errors, latency, and cache hits/misses.
+**Design for failures and duplicates:** Operations triggered from
+requests/events must be idempotent as failures can occur and a given
+request/event can be delivered more than once. Include appropriate
+retries for downstream calls.
+
+**Orchestrate the application with state machines, not functions.**
+Chaining Lambda executions within the code to orchestrate the workflow
+of the application results in a monolithic and tightly coupled
+application. Instead, use a state machine and workflows based upon state
+machines to orchestrate transactions and communication flows.
+
+#### **Layered Architecture Approach**
+Enterprise architectures can be divided into seven discrete layers. Each
+layer leverages AWS managed services.
+
+**Compute:** The compute layer of the workload manages requests from
+external systems, controlling access and ensuring requests are
+appropriately authorized. It contains the runtime environment where
+business logic will be deployed and executed.
+
+**Data:** The data layer of the workload manages persistent storage from
+within a system. It provides a secure mechanism to store the states
+needed for business logic. It provides a mechanism to trigger events in
+response to data changes.
+
+**Messaging and Streaming:** The messaging layer of the workload manages
+communications between components. The streaming layer manages real-time
+analysis and processing of streaming data.
+
+**User Management and Identity:** The user management and identity layer
+of the workload provides identity, authentication, and authorization for
+both external and internal customers for the workload's interfaces.
+
+**Edge:** The edge layer of the workload manages the presentation layer
+and connectivity to external customers. It provides an efficient
+delivery method to external customers residing in distinct geographical
+locations.
+
+**Systems Monitoring and Deployment:** The system monitoring layer of
+the workload manages system visibility through metrics and creates
+contextual awareness of how it operates and behaves over time. The
+deployment layer defines how the workload changes are promoted through a
+release management process.
+
+### Related Stories
+- [[The Craft of IT Architecture: Core Competencies of Successful IT
+  Architects](https://medium.com/@kylejones_47003/the-craft-of-it-architecture-core-competencies-of-successful-it-architects-93cb4a7a571e)]
+- [[Business problem framing for IT
+  Architects](https://medium.com/@kylejones_47003/business-problem-framing-for-it-architects-a152a393bb6d)]
+- [[IT Architecture is a team
+  sport](https://medium.com/@kylejones_47003/it-architecture-is-a-team-sport-37883f24f836)]
+::::::::By [Kyle Jones](https://medium.com/@kyle-t-jones) on
+[September 12, 2024](https://medium.com/p/29fb2b91c8fd).
+
+[Canonical
+link](https://medium.com/@kyle-t-jones/enterprise-architectural-tenets-unless-you-know-better-ones-29fb2b91c8fd)
+
+Exported from [Medium](https://medium.com) on November 10, 2025.
